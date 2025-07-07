@@ -106,7 +106,6 @@
       const params = new URLSearchParams(window.location.search);
       const class_id = params.get("class_id") || "unknown_class";
       const user_id = params.get("user_id") || "unknown_user";
-      const notebook_id = params.get("notebook_id") || "unknown_notebook";
 
       const enjoy = document.querySelector('input[name="enjoy"]:checked')?.value || "";
       const learn = document.querySelector('input[name="learn"]:checked')?.value || "";
@@ -115,31 +114,31 @@
       const payload = new URLSearchParams();
       payload.append("class_id", class_id);
       payload.append("user_id", user_id);
-      payload.append("notebook_id", notebook_id);
       payload.append("date", new Date().toISOString());
       payload.append("enjoy_rating", enjoy);
       payload.append("learn_rating", learn);
       payload.append("suggestions", suggestions);
 
       const submitBtn = document.getElementById("submitBtn");
-submitBtn.disabled = true;
+      submitBtn.disabled = true;
 
-fetch("https://script.google.com/macros/s/AKfycbwXOBjdnhZ_0YsKAt2TC1QOQVC-TH4xScVtcGJOtKnP7AtA6jsXtHsVHqKZo5dtJrbC8w/exec", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/x-www-form-urlencoded"
-  },
-  body: payload.toString()
-})
-.then(response => {
-  hasSubmitted = true;
-  submitBtn.style.display = "none";
-  document.getElementById("confirmation").style.display = "block";
-})
-.catch(error => {
-  alert("There was an error submitting the survey.");
-  submitBtn.disabled = false;
-});
+      fetch("https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_URL/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: payload
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Network error");
+        hasSubmitted = true;
+        submitBtn.style.display = "none";
+        document.getElementById("confirmation").style.display = "block";
+      })
+      .catch(error => {
+        alert("There was an error submitting the survey.");
+        submitBtn.disabled = false;
+      });
     }
   </script>
 </body>
