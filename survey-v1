@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .survey-card {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      width: 400px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .survey-card h2 {
+      margin-top: 0;
+      font-size: 1.2em;
+    }
+    .question {
+      margin: 15px 0;
+    }
+    .question label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .ratings {
+      display: flex;
+      justify-content: space-between;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+  </style>
+</head>
+<body>
+  <div class="survey-card">
+    <h2>Notebook Feedback</h2>
+
+    <div class="question">
+      <label>How much did you enjoy this notebook?</label>
+      <div class="ratings">
+        <label><input type="radio" name="enjoy" value="1">1</label>
+        <label><input type="radio" name="enjoy" value="2">2</label>
+        <label><input type="radio" name="enjoy" value="3">3</label>
+        <label><input type="radio" name="enjoy" value="4">4</label>
+        <label><input type="radio" name="enjoy" value="5">5</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <label>How much did you learn from this notebook?</label>
+      <div class="ratings">
+        <label><input type="radio" name="learn" value="1">1</label>
+        <label><input type="radio" name="learn" value="2">2</label>
+        <label><input type="radio" name="learn" value="3">3</label>
+        <label><input type="radio" name="learn" value="4">4</label>
+        <label><input type="radio" name="learn" value="5">5</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <label>What suggestions do you have for improving the notebook?</label>
+      <textarea id="suggestions"></textarea>
+    </div>
+
+    <button onclick="submitSurvey()">Submit</button>
+  </div>
+
+  <script>
+    function submitSurvey() {
+      const params = new URLSearchParams(window.location.search);
+      const class_id = params.get("class_id") || "unknown_class";
+      const user_id = params.get("user_id") || "unknown_user";
+      const notebook = params.get("notebook") || "unknown_notebook";
+
+      const enjoy = document.querySelector('input[name="enjoy"]:checked')?.value || "";
+      const learn = document.querySelector('input[name="learn"]:checked')?.value || "";
+      const suggestions = document.getElementById("suggestions").value;
+
+      const payload = new URLSearchParams();
+      payload.append("class_id", class_id);
+      payload.append("user_id", user_id);
+      payload.append("notebook", notebook);
+      payload.append("date", new Date().toISOString());
+      payload.append("enjoy_rating", enjoy);
+      payload.append("learn_rating", learn);
+      payload.append("suggestions", suggestions);
+
+      fetch("PASTE_YOUR_SCRIPT_URL_HERE", {
+        method: "POST",
+        body: payload
+      })
+      .then(response => alert("Thank you for your feedback!"))
+      .catch(error => alert("There was an error submitting the survey."));
+    }
+  </script>
+</body>
+</html>
