@@ -122,25 +122,24 @@
       payload.append("suggestions", suggestions);
 
       const submitBtn = document.getElementById("submitBtn");
-      submitBtn.disabled = true;
+submitBtn.disabled = true;
 
-      fetch("https://script.google.com/macros/s/AKfycbwXOBjdnhZ_0YsKAt2TC1QOQVC-TH4xScVtcGJOtKnP7AtA6jsXtHsVHqKZo5dtJrbC8w/exec", {
-        method: "POST",
-        headers: {
-           "Content-Type": "application/x-www-form-urlencoded"
-      },
-       body: payload
-      })
-      
-      .then(response => {
-        hasSubmitted = true;
-        submitBtn.style.display = "none";
-        document.getElementById("confirmation").style.display = "block";
-      })
-      .catch(error => {
-        alert("There was an error submitting the survey.");
-        submitBtn.disabled = false;
-      });
+fetch("https://script.google.com/macros/s/AKfycbwXOBjdnhZ_0YsKAt2TC1QOQVC-TH4xScVtcGJOtKnP7AtA6jsXtHsVHqKZo5dtJrbC8w/exec", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  body: payload
+})
+.then(response => {
+  hasSubmitted = true;
+  submitBtn.style.display = "none";
+  document.getElementById("confirmation").style.display = "block";
+})
+.catch(error => {
+  alert("There was an error submitting the survey.");
+  submitBtn.disabled = false;
+});
     }
   </script>
 </body>
