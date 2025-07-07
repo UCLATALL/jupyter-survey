@@ -112,9 +112,9 @@
       const suggestions = document.getElementById("suggestions").value;
 
       const payload = new URLSearchParams();
-      payload.append("date", new Date().toISOString());
       payload.append("class_id", class_id);
       payload.append("user_id", user_id);
+      payload.append("date", new Date().toISOString());
       payload.append("enjoy_rating", enjoy);
       payload.append("learn_rating", learn);
       payload.append("suggestions", suggestions);
@@ -122,15 +122,12 @@
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.disabled = true;
 
-      fetch("https://script.google.com/macros/s/AKfycbwXOBjdnhZ_0YsKAt2TC1QOQVC-TH4xScVtcGJOtKnP7AtA6jsXtHsVHqKZo5dtJrbC8w/exec", {
+      fetch("<YOUR_SCRIPT_URL>", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: payload
       })
       .then(response => {
-        if (!response.ok) throw new Error("Network error");
         hasSubmitted = true;
         submitBtn.style.display = "none";
         document.getElementById("confirmation").style.display = "block";
