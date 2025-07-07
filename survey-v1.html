@@ -112,9 +112,9 @@
       const suggestions = document.getElementById("suggestions").value;
 
       const payload = new URLSearchParams();
+      payload.append("date", new Date().toISOString());
       payload.append("class_id", class_id);
       payload.append("user_id", user_id);
-      payload.append("date", new Date().toISOString());
       payload.append("enjoy_rating", enjoy);
       payload.append("learn_rating", learn);
       payload.append("suggestions", suggestions);
