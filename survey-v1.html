@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8" />
   <style>
     body {
       font-family: sans-serif;
@@ -22,9 +23,14 @@
     }
     .survey-card h2 {
       margin-top: 0;
+      font-size: 1.2em;
     }
     .question {
       margin: 15px 0;
+    }
+    .question label {
+      display: block;
+      margin-bottom: 5px;
     }
     .ratings {
       display: flex;
@@ -101,11 +107,10 @@
       const params = new URLSearchParams(window.location.search);
       const class_id = params.get("class_id") || "unknown_class";
       const user_id = params.get("user_id") || "unknown_user";
-
+      const date = new Date().toISOString();
       const enjoy = document.querySelector('input[name="enjoy"]:checked')?.value || "";
       const learn = document.querySelector('input[name="learn"]:checked')?.value || "";
       const suggestions = document.getElementById("suggestions").value;
-      const date = new Date().toISOString();
 
       const payload = new URLSearchParams();
       payload.append("class_id", class_id);
@@ -118,14 +123,23 @@
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.disabled = true;
 
-      fetch("https://script.google.com/macros/s/AKfycbwXOBjdnhZ_0YsKAt2TC1QOQVC-TH4xScVtcGJOtKnP7AtA6jsXtHsVHqKZo5dtJrbC8w/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbwWLSMrRXgf3p6BHzEWVF0dKCCcIXhWY9N4sjW-eP-TsvHOPiNgA78RDFkX_o8CyXH6nA/exec", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
         body: payload
       })
-      .then(response => {
-        hasSubmitted = true;
-        submitBtn.style.display = "none";
-        document.getElementById("confirmation").style.display = "block";
+      .then(response => response.text())
+      .then(text => {
+        if (text.trim() === "OK") {
+          hasSubmitted = true;
+          submitBtn.style.display = "none";
+          document.getElementById("confirmation").style.display = "block";
+        } else {
+          alert("Submission failed. Please try again.");
+          submitBtn.disabled = false;
+        }
       })
       .catch(error => {
         alert("There was an error submitting the survey.");
