@@ -122,12 +122,12 @@
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.disabled = true;
 
-      fetch("<YOUR_SCRIPT_URL>", {
+      fetch("https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: payload
       })
-      .then(response => {
+      .then(response => response.text())
+      .then(() => {
         hasSubmitted = true;
         submitBtn.style.display = "none";
         document.getElementById("confirmation").style.display = "block";
