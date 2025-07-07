@@ -22,14 +22,9 @@
     }
     .survey-card h2 {
       margin-top: 0;
-      font-size: 1.2em;
     }
     .question {
       margin: 15px 0;
-    }
-    .question label {
-      display: block;
-      margin-bottom: 5px;
     }
     .ratings {
       display: flex;
@@ -110,11 +105,12 @@
       const enjoy = document.querySelector('input[name="enjoy"]:checked')?.value || "";
       const learn = document.querySelector('input[name="learn"]:checked')?.value || "";
       const suggestions = document.getElementById("suggestions").value;
+      const date = new Date().toISOString();
 
       const payload = new URLSearchParams();
       payload.append("class_id", class_id);
       payload.append("user_id", user_id);
-      payload.append("date", new Date().toISOString());
+      payload.append("date", date);
       payload.append("enjoy_rating", enjoy);
       payload.append("learn_rating", learn);
       payload.append("suggestions", suggestions);
@@ -122,12 +118,11 @@
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.disabled = true;
 
-      fetch("https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec", {
+      fetch("https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID/exec", {
         method: "POST",
         body: payload
       })
-      .then(response => response.text())
-      .then(() => {
+      .then(response => {
         hasSubmitted = true;
         submitBtn.style.display = "none";
         document.getElementById("confirmation").style.display = "block";
