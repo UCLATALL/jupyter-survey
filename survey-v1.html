@@ -12,29 +12,29 @@
     }
     .card {
       background: white;
-      padding: 20px;
+      padding: 20px 30px;
       border-radius: 6px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      width: 400px;
+      width: 700px;
     }
     h3 {
       margin-top: 0;
     }
-    .question {
-      margin-bottom: 25px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    td {
+      vertical-align: top;
+      padding: 10px 0;
     }
     .scale {
       display: flex;
       justify-content: space-between;
-      gap: 6px;
-      font-size: 13px;
     }
     .scale label {
-      flex: 1;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex: 1;
     }
     textarea {
       width: 100%;
@@ -61,32 +61,38 @@
   <div class="card">
     <h3>Quick Survey</h3>
 
-    <div class="question">
-      <p>I enjoyed this Jupyter notebook a lot.</p>
-      <div class="scale">
-        <label><input type="radio" name="enjoy" value="1">Strongly<br>Disagree</label>
-        <label><input type="radio" name="enjoy" value="2">Disagree</label>
-        <label><input type="radio" name="enjoy" value="3">Neutral</label>
-        <label><input type="radio" name="enjoy" value="4">Agree</label>
-        <label><input type="radio" name="enjoy" value="5">Strongly<br>Agree</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>I learned a lot from this Jupyter notebook.</p>
-      <div class="scale">
-        <label><input type="radio" name="learn" value="1">Strongly<br>Disagree</label>
-        <label><input type="radio" name="learn" value="2">Disagree</label>
-        <label><input type="radio" name="learn" value="3">Neutral</label>
-        <label><input type="radio" name="learn" value="4">Agree</label>
-        <label><input type="radio" name="learn" value="5">Strongly<br>Agree</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>What suggestions do you have for improving the notebook?</p>
-      <textarea id="suggestions" placeholder="Your feedback..."></textarea>
-    </div>
+    <table>
+      <tr>
+        <td><strong>I enjoyed this Jupyter notebook a lot.</strong></td>
+        <td>
+          <div class="scale">
+            <label><input type="radio" name="enjoy" value="1"><br>Strongly Disagree</label>
+            <label><input type="radio" name="enjoy" value="2"><br>Disagree</label>
+            <label><input type="radio" name="enjoy" value="3"><br>Neutral</label>
+            <label><input type="radio" name="enjoy" value="4"><br>Agree</label>
+            <label><input type="radio" name="enjoy" value="5"><br>Strongly Agree</label>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><strong>I learned a lot from this Jupyter notebook.</strong></td>
+        <td>
+          <div class="scale">
+            <label><input type="radio" name="learn" value="1"><br>Strongly Disagree</label>
+            <label><input type="radio" name="learn" value="2"><br>Disagree</label>
+            <label><input type="radio" name="learn" value="3"><br>Neutral</label>
+            <label><input type="radio" name="learn" value="4"><br>Agree</label>
+            <label><input type="radio" name="learn" value="5"><br>Strongly Agree</label>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <p><strong>What suggestions do you have for improving the notebook?</strong></p>
+          <textarea id="suggestions" placeholder="Your feedback..."></textarea>
+        </td>
+      </tr>
+    </table>
 
     <button onclick="submitSurvey()">Submit</button>
     <div id="confirmation">Thanks for your response!</div>
