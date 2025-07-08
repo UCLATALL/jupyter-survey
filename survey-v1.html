@@ -4,7 +4,7 @@
   <style>
     body {
       font-family: sans-serif;
-      background: #f0f0f0;
+      background: #f7f7f7; /* Closer to Jupyter background */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -34,10 +34,15 @@
       padding: 10px;
     }
 
-    th:first-child, td:first-child {
+    th.label-col, td.label-col {
       text-align: left;
       font-weight: bold;
       width: 30%;
+    }
+
+    th.option-col {
+      width: 14%; /* even spacing for 5 options */
+      line-height: 1.2em;
     }
 
     textarea {
@@ -45,6 +50,7 @@
       height: 80px;
       font-size: 1em;
       padding: 10px;
+      margin-top: 10px;
     }
 
     .button-wrapper {
@@ -88,17 +94,17 @@
     <table>
       <thead>
         <tr>
-          <th></th>
-          <th>Strongly Disagree</th>
-          <th>Disagree</th>
-          <th>Neutral</th>
-          <th>Agree</th>
-          <th>Strongly Agree</th>
+          <th class="label-col"></th>
+          <th class="option-col">Strongly<br>Disagree</th>
+          <th class="option-col">Disagree</th>
+          <th class="option-col">Neutral</th>
+          <th class="option-col">Agree</th>
+          <th class="option-col">Strongly<br>Agree</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>I enjoyed this Jupyter notebook a lot.</td>
+          <td class="label-col">I enjoyed this Jupyter notebook a lot.</td>
           <td><input type="radio" name="enjoy" value="1"></td>
           <td><input type="radio" name="enjoy" value="2"></td>
           <td><input type="radio" name="enjoy" value="3"></td>
@@ -106,7 +112,7 @@
           <td><input type="radio" name="enjoy" value="5"></td>
         </tr>
         <tr>
-          <td>I learned a lot from this Jupyter notebook.</td>
+          <td class="label-col">I learned a lot from this Jupyter notebook.</td>
           <td><input type="radio" name="learn" value="1"></td>
           <td><input type="radio" name="learn" value="2"></td>
           <td><input type="radio" name="learn" value="3"></td>
@@ -157,8 +163,6 @@
       .then(() => {
         document.getElementById("confirmation").style.display = "block";
         button.style.display = "none";
-
-        // Disable all inputs
         document.querySelectorAll("input, textarea").forEach(el => el.disabled = true);
       })
       .catch(err => {
