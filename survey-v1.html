@@ -37,20 +37,25 @@
     th.label-col, td.label-col {
       text-align: left;
       font-weight: bold;
-      width: 50%; /* increased from 30% */
+      width: 45%; /* decreased by 5% */
     }
 
     th.option-col {
-      width: 10%; /* decreased from 14% */
+      width: 11%; /* increased by 1% per column */
       line-height: 1.1em;
     }
 
     textarea {
-      width: 100%;
+      width: 90%;
       height: 80px;
       font-size: 1em;
       padding: 10px;
       margin-top: 10px;
+      margin-left: 5%;
+    }
+
+    p#suggestion-label {
+      padding-left: 5%;
     }
 
     .button-wrapper {
@@ -124,7 +129,7 @@
       </tbody>
     </table>
 
-    <p><strong>What suggestions do you have for improving the notebook?</strong></p>
+    <p id="suggestion-label"><strong>What suggestions do you have for improving the notebook?</strong></p>
     <textarea id="suggestions" placeholder="Your feedback..."></textarea>
 
     <div class="button-wrapper">
