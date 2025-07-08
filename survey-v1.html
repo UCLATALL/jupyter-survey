@@ -1,149 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
   <style>
     body {
       font-family: sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 0;
+      background: #f0f0f0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
-    .survey-card {
+    .card {
       background: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
       padding: 20px;
-      width: 400px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .survey-card h2 {
-      margin-top: 0;
-      font-size: 1.2em;
-    }
-    .question {
-      margin: 15px 0;
-    }
-    .question label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    .ratings {
-      display: flex;
-      justify-content: space-between;
-    }
-    textarea {
-      width: 100%;
-      height: 80px;
-      margin-top: 5px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 300px;
     }
     button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      font-size: 1em;
       background: #007acc;
       color: white;
+      padding: 10px;
       border: none;
       border-radius: 4px;
+      margin-top: 10px;
       cursor: pointer;
-    }
-    button:disabled {
-      background: #aaa;
-      cursor: not-allowed;
     }
     #confirmation {
       display: none;
       color: green;
-      font-weight: bold;
       margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="survey-card">
-    <h2>Notebook Feedback</h2>
+  <div class="card">
+    <h3>Quick Survey</h3>
+    <p>How much did you enjoy the notebook?</p>
+    <label><input type="radio" name="enjoy" value="1"> 1</label><br>
+    <label><input type="radio" name="enjoy" value="2"> 2</label><br>
+    <label><input type="radio" name="enjoy" value="3"> 3</label><br>
+    <label><input type="radio" name="enjoy" value="4"> 4</label><br>
+    <label><input type="radio" name="enjoy" value="5"> 5</label><br>
 
-    <div class="question">
-      <label>How much did you enjoy this notebook?</label>
-      <div class="ratings">
-        <label><input type="radio" name="enjoy" value="1">1</label>
-        <label><input type="radio" name="enjoy" value="2">2</label>
-        <label><input type="radio" name="enjoy" value="3">3</label>
-        <label><input type="radio" name="enjoy" value="4">4</label>
-        <label><input type="radio" name="enjoy" value="5">5</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <label>How much did you learn from this notebook?</label>
-      <div class="ratings">
-        <label><input type="radio" name="learn" value="1">1</label>
-        <label><input type="radio" name="learn" value="2">2</label>
-        <label><input type="radio" name="learn" value="3">3</label>
-        <label><input type="radio" name="learn" value="4">4</label>
-        <label><input type="radio" name="learn" value="5">5</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <label>What suggestions do you have for improving the notebook?</label>
-      <textarea id="suggestions"></textarea>
-    </div>
-
-    <button onclick="submitSurvey()" id="submitBtn">Submit</button>
-    <p id="confirmation">Your response has been received. Thanks!</p>
+    <button onclick="submitSurvey()">Submit</button>
+    <div id="confirmation">Thanks for your response!</div>
   </div>
 
   <script>
-    let hasSubmitted = false;
+    const params = new URLSearchParams(window.location.search);
+    const class_id = params.get("class_id") || "unknown_class";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxxZgLcMfwhYUuh29sauiRzCGBatRYDulUfcraFyLQFjpvkC_VaS_ia3DpTwOF1r4kD/exec"; // paste your deployed script URL
 
     function submitSurvey() {
-      if (hasSubmitted) return;
-
-      const params = new URLSearchParams(window.location.search);
-      const class_id = params.get("class_id") || "unknown_class";
-      const user_id = params.get("user_id") || "unknown_user";
-      const date = new Date().toISOString();
       const enjoy = document.querySelector('input[name="enjoy"]:checked')?.value || "";
-      const learn = document.querySelector('input[name="learn"]:checked')?.value || "";
-      const suggestions = document.getElementById("suggestions").value;
 
       const payload = new URLSearchParams();
       payload.append("class_id", class_id);
-      payload.append("user_id", user_id);
-      payload.append("date", date);
       payload.append("enjoy_rating", enjoy);
-      payload.append("learn_rating", learn);
-      payload.append("suggestions", suggestions);
 
-      const submitBtn = document.getElementById("submitBtn");
-      submitBtn.disabled = true;
-
-      fetch("https://script.google.com/macros/s/AKfycbxxZgLcMfwhYUuh29sauiRzCGBatRYDulUfcraFyLQFjpvkC_VaS_ia3DpTwOF1r4kD/exec", {
+      fetch(scriptURL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
         body: payload
       })
-      .then(response => response.text())
-      .then(text => {
-        if (text.trim() === "OK") {
-          hasSubmitted = true;
-          submitBtn.style.display = "none";
-          document.getElementById("confirmation").style.display = "block";
-        } else {
-          alert("Submission failed. Please try again.");
-          submitBtn.disabled = false;
-        }
+      .then(() => {
+        document.querySelector("button").style.display = "none";
+        document.getElementById("confirmation").style.display = "block";
       })
-      .catch(error => {
-        alert("There was an error submitting the survey.");
-        submitBtn.disabled = false;
+      .catch(err => {
+        alert("Submission failed.");
+        console.error(err);
       });
     }
   </script>
