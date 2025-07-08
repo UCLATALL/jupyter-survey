@@ -15,7 +15,31 @@
       padding: 20px;
       border-radius: 6px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      width: 300px;
+      width: 400px;
+    }
+    h3 {
+      margin-top: 0;
+    }
+    .question {
+      margin-bottom: 25px;
+    }
+    .scale {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 13px;
+    }
+    .scale label {
+      flex: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+      margin-top: 5px;
     }
     button {
       background: #007acc;
@@ -31,34 +55,38 @@
       color: green;
       margin-top: 10px;
     }
-    textarea {
-      width: 100%;
-      margin-top: 8px;
-      height: 60px;
-      resize: vertical;
-    }
   </style>
 </head>
 <body>
   <div class="card">
     <h3>Quick Survey</h3>
 
-    <p>How much did you enjoy the notebook?</p>
-    <label><input type="radio" name="enjoy" value="1"> 1</label><br>
-    <label><input type="radio" name="enjoy" value="2"> 2</label><br>
-    <label><input type="radio" name="enjoy" value="3"> 3</label><br>
-    <label><input type="radio" name="enjoy" value="4"> 4</label><br>
-    <label><input type="radio" name="enjoy" value="5"> 5</label><br>
+    <div class="question">
+      <p>I enjoyed this Jupyter notebook a lot.</p>
+      <div class="scale">
+        <label><input type="radio" name="enjoy" value="1">Strongly<br>Disagree</label>
+        <label><input type="radio" name="enjoy" value="2">Disagree</label>
+        <label><input type="radio" name="enjoy" value="3">Neutral</label>
+        <label><input type="radio" name="enjoy" value="4">Agree</label>
+        <label><input type="radio" name="enjoy" value="5">Strongly<br>Agree</label>
+      </div>
+    </div>
 
-    <p>How much did you learn from the notebook?</p>
-    <label><input type="radio" name="learn" value="1"> 1</label><br>
-    <label><input type="radio" name="learn" value="2"> 2</label><br>
-    <label><input type="radio" name="learn" value="3"> 3</label><br>
-    <label><input type="radio" name="learn" value="4"> 4</label><br>
-    <label><input type="radio" name="learn" value="5"> 5</label><br>
+    <div class="question">
+      <p>I learned a lot from this Jupyter notebook.</p>
+      <div class="scale">
+        <label><input type="radio" name="learn" value="1">Strongly<br>Disagree</label>
+        <label><input type="radio" name="learn" value="2">Disagree</label>
+        <label><input type="radio" name="learn" value="3">Neutral</label>
+        <label><input type="radio" name="learn" value="4">Agree</label>
+        <label><input type="radio" name="learn" value="5">Strongly<br>Agree</label>
+      </div>
+    </div>
 
-    <p>Any suggestions?</p>
-    <textarea id="suggestions" placeholder="Write your feedback here..."></textarea>
+    <div class="question">
+      <p>What suggestions do you have for improving the notebook?</p>
+      <textarea id="suggestions" placeholder="Your feedback..."></textarea>
+    </div>
 
     <button onclick="submitSurvey()">Submit</button>
     <div id="confirmation">Thanks for your response!</div>
@@ -69,7 +97,6 @@
     const class_id = params.get("class_id") || "unknown_class";
     const user_id = params.get("user_id") || "unknown_user";
     const notebook_id = params.get("notebook_id") || "unknown_notebook";
-
     const scriptURL = "https://script.google.com/macros/s/AKfycbxxZgLcMfwhYUuh29sauiRzCGBatRYDulUfcraFyLQFjpvkC_VaS_ia3DpTwOF1r4kD/exec";
 
     function submitSurvey() {
@@ -78,6 +105,7 @@
       const suggestions = document.getElementById("suggestions").value;
 
       const payload = new URLSearchParams();
+      payload.append("date", new Date().toISOString());
       payload.append("class_id", class_id);
       payload.append("user_id", user_id);
       payload.append("notebook_id", notebook_id);
