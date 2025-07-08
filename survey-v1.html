@@ -32,16 +32,17 @@
     th, td {
       text-align: center;
       padding: 10px;
+      vertical-align: top;
     }
 
     th.label-col, td.label-col {
       text-align: left;
       font-weight: bold;
-      width: 45%; /* reduced by 5% */
+      width: 28%;
     }
 
     th.option-col {
-      width: 11%; /* increased by 1% per column */
+      width: 14.4%;
       line-height: 1.2em;
     }
 
@@ -85,15 +86,6 @@
       width: 18px;
       height: 18px;
     }
-
-    .suggestion-section {
-      width: 45%; /* aligns with question column */
-      font-weight: bold;
-    }
-
-    .suggestion-section textarea {
-      width: 100%;
-    }
   </style>
 </head>
 <body>
@@ -128,13 +120,14 @@
           <td><input type="radio" name="learn" value="4"></td>
           <td><input type="radio" name="learn" value="5"></td>
         </tr>
+        <tr>
+          <td colspan="6">
+            <p style="text-align:left; font-weight:bold;">What suggestions do you have for improving the notebook?</p>
+            <textarea id="suggestions" placeholder="Your feedback..."></textarea>
+          </td>
+        </tr>
       </tbody>
     </table>
-
-    <div class="suggestion-section">
-      <p>What suggestions do you have for improving the notebook?</p>
-      <textarea id="suggestions" placeholder="Your feedback..."></textarea>
-    </div>
 
     <div class="button-wrapper">
       <button id="submitBtn" onclick="submitSurvey()">Submit</button>
