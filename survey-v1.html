@@ -4,120 +4,131 @@
   <style>
     body {
       font-family: sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 20px;
+      background: #f7f7f7; /* Closer to Jupyter background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
+
     .card {
-      background: #f7f7f7;
-      padding: 30px;
-      border-radius: 8px;
-      max-width: 1000px;
-      margin: auto;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      background: white;
+      padding: 30px 40px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 950px;
     }
-    h2 {
+
+    h3 {
       margin-top: 0;
     }
+
     table {
-      border-collapse: collapse;
       width: 100%;
-      margin-bottom: 30px;
+      border-collapse: collapse;
+      margin-bottom: 20px;
     }
+
     th, td {
       text-align: center;
-      padding: 8px 5px;
+      padding: 10px;
     }
-    td:first-child, th:first-child {
+
+    th.label-col, td.label-col {
       text-align: left;
-      padding-left: 0;
-      white-space: nowrap;
-    }
-    th {
       font-weight: bold;
+      width: 30%;
     }
+
+    th.option-col {
+      width: 14%; /* even spacing for 5 options */
+      line-height: 1.2em;
+    }
+
     textarea {
       width: 100%;
+      height: 80px;
+      font-size: 1em;
       padding: 10px;
       margin-top: 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      font-size: 1em;
-      background-color: #f9f9f9;
     }
-    .submit-container {
+
+    .button-wrapper {
       text-align: center;
-      margin-top: 20px;
     }
+
     button {
       background: #007acc;
       color: white;
       padding: 10px 20px;
       border: none;
       border-radius: 4px;
-      cursor: pointer;
       font-size: 1em;
+      cursor: pointer;
     }
+
+    button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
     #confirmation {
       display: none;
-      text-align: center;
-      color: green;
-      margin-top: 20px;
       font-weight: bold;
+      color: green;
+      text-align: center;
+      margin-top: 20px;
     }
+
     input[type="radio"] {
-      transform: scale(1.2);
-      margin: 5px;
-      cursor: pointer;
+      accent-color: #007acc;
+      width: 18px;
+      height: 18px;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <h2>Quick Survey</h2>
-    <form id="survey-form">
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>Strongly<br>Disagree</th>
-            <th>Disagree</th>
-            <th>Neutral</th>
-            <th>Agree</th>
-            <th>Strongly<br>Agree</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>I enjoyed this Jupyter notebook a lot.</strong></td>
-            <td><input type="radio" name="enjoy" value="1"></td>
-            <td><input type="radio" name="enjoy" value="2"></td>
-            <td><input type="radio" name="enjoy" value="3"></td>
-            <td><input type="radio" name="enjoy" value="4"></td>
-            <td><input type="radio" name="enjoy" value="5"></td>
-          </tr>
-          <tr>
-            <td><strong>I learned a lot from this Jupyter notebook.</strong></td>
-            <td><input type="radio" name="learn" value="1"></td>
-            <td><input type="radio" name="learn" value="2"></td>
-            <td><input type="radio" name="learn" value="3"></td>
-            <td><input type="radio" name="learn" value="4"></td>
-            <td><input type="radio" name="learn" value="5"></td>
-          </tr>
-        </tbody>
-      </table>
+    <h3>Quick Survey</h3>
 
-      <div style="margin-bottom: 20px;">
-        <label><strong>What suggestions do you have for improving the notebook?</strong></label><br>
-        <textarea id="suggestions" placeholder="Your feedback..." rows="5"></textarea>
-      </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="label-col"></th>
+          <th class="option-col">Strongly<br>Disagree</th>
+          <th class="option-col">Disagree</th>
+          <th class="option-col">Neutral</th>
+          <th class="option-col">Agree</th>
+          <th class="option-col">Strongly<br>Agree</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label-col">I enjoyed this Jupyter notebook a lot.</td>
+          <td><input type="radio" name="enjoy" value="1"></td>
+          <td><input type="radio" name="enjoy" value="2"></td>
+          <td><input type="radio" name="enjoy" value="3"></td>
+          <td><input type="radio" name="enjoy" value="4"></td>
+          <td><input type="radio" name="enjoy" value="5"></td>
+        </tr>
+        <tr>
+          <td class="label-col">I learned a lot from this Jupyter notebook.</td>
+          <td><input type="radio" name="learn" value="1"></td>
+          <td><input type="radio" name="learn" value="2"></td>
+          <td><input type="radio" name="learn" value="3"></td>
+          <td><input type="radio" name="learn" value="4"></td>
+          <td><input type="radio" name="learn" value="5"></td>
+        </tr>
+      </tbody>
+    </table>
 
-      <div class="submit-container">
-        <button type="submit">Submit</button>
-      </div>
+    <p><strong>What suggestions do you have for improving the notebook?</strong></p>
+    <textarea id="suggestions" placeholder="Your feedback..."></textarea>
 
-      <div id="confirmation">Thanks for your response!</div>
-    </form>
+    <div class="button-wrapper">
+      <button id="submitBtn" onclick="submitSurvey()">Submit</button>
+    </div>
+    <div id="confirmation">Thanks for your response!</div>
   </div>
 
   <script>
@@ -127,11 +138,9 @@
     const notebook_id = params.get("notebook_id") || "unknown_notebook";
     const scriptURL = "https://script.google.com/macros/s/AKfycbxxZgLcMfwhYUuh29sauiRzCGBatRYDulUfcraFyLQFjpvkC_VaS_ia3DpTwOF1r4kD/exec";
 
-    document.getElementById("survey-form").addEventListener("submit", function(event) {
-      event.preventDefault();
-
-      const enjoy_rating = document.querySelector('input[name="enjoy"]:checked')?.value || "";
-      const learn_rating = document.querySelector('input[name="learn"]:checked')?.value || "";
+    function submitSurvey() {
+      const enjoy = document.querySelector('input[name="enjoy"]:checked')?.value || "";
+      const learn = document.querySelector('input[name="learn"]:checked')?.value || "";
       const suggestions = document.getElementById("suggestions").value;
 
       const payload = new URLSearchParams();
@@ -139,24 +148,30 @@
       payload.append("class_id", class_id);
       payload.append("user_id", user_id);
       payload.append("notebook_id", notebook_id);
-      payload.append("enjoy_rating", enjoy_rating);
-      payload.append("learn_rating", learn_rating);
+      payload.append("enjoy_rating", enjoy);
+      payload.append("learn_rating", learn);
       payload.append("suggestions", suggestions);
+
+      const button = document.getElementById("submitBtn");
+      button.disabled = true;
+      button.innerText = "Submitting...";
 
       fetch(scriptURL, {
         method: "POST",
         body: payload
       })
       .then(() => {
-        document.querySelector("button").disabled = true;
-        document.querySelectorAll("input, textarea").forEach(el => el.disabled = true);
         document.getElementById("confirmation").style.display = "block";
+        button.style.display = "none";
+        document.querySelectorAll("input, textarea").forEach(el => el.disabled = true);
       })
       .catch(err => {
         alert("Submission failed.");
         console.error(err);
+        button.disabled = false;
+        button.innerText = "Submit";
       });
-    });
+    }
   </script>
 </body>
 </html>
