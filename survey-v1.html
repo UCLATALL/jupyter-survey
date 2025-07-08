@@ -31,17 +31,34 @@
       color: green;
       margin-top: 10px;
     }
+    textarea {
+      width: 100%;
+      margin-top: 8px;
+      height: 60px;
+      resize: vertical;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h3>Quick Survey</h3>
+
     <p>How much did you enjoy the notebook?</p>
     <label><input type="radio" name="enjoy" value="1"> 1</label><br>
     <label><input type="radio" name="enjoy" value="2"> 2</label><br>
     <label><input type="radio" name="enjoy" value="3"> 3</label><br>
     <label><input type="radio" name="enjoy" value="4"> 4</label><br>
     <label><input type="radio" name="enjoy" value="5"> 5</label><br>
+
+    <p>How much did you learn from the notebook?</p>
+    <label><input type="radio" name="learn" value="1"> 1</label><br>
+    <label><input type="radio" name="learn" value="2"> 2</label><br>
+    <label><input type="radio" name="learn" value="3"> 3</label><br>
+    <label><input type="radio" name="learn" value="4"> 4</label><br>
+    <label><input type="radio" name="learn" value="5"> 5</label><br>
+
+    <p>Any suggestions?</p>
+    <textarea id="suggestions" placeholder="Write your feedback here..."></textarea>
 
     <button onclick="submitSurvey()">Submit</button>
     <div id="confirmation">Thanks for your response!</div>
@@ -50,18 +67,23 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const class_id = params.get("class_id") || "unknown_class";
-    const notebook_id = params.get("notebook_id") || "unknown_notebook";
     const user_id = params.get("user_id") || "unknown_user";
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxxZgLcMfwhYUuh29sauiRzCGBatRYDulUfcraFyLQFjpvkC_VaS_ia3DpTwOF1r4kD/exec"; // paste your deployed script URL
+    const notebook_id = params.get("notebook_id") || "unknown_notebook";
+
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxxZgLcMfwhYUuh29sauiRzCGBatRYDulUfcraFyLQFjpvkC_VaS_ia3DpTwOF1r4kD/exec";
 
     function submitSurvey() {
       const enjoy = document.querySelector('input[name="enjoy"]:checked')?.value || "";
+      const learn = document.querySelector('input[name="learn"]:checked')?.value || "";
+      const suggestions = document.getElementById("suggestions").value;
 
       const payload = new URLSearchParams();
       payload.append("class_id", class_id);
-      payload.append("notebook_id", notebook_id);
       payload.append("user_id", user_id);
+      payload.append("notebook_id", notebook_id);
       payload.append("enjoy_rating", enjoy);
+      payload.append("learn_rating", learn);
+      payload.append("suggestions", suggestions);
 
       fetch(scriptURL, {
         method: "POST",
