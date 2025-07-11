@@ -1,18 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Quick Survey</title>
   <style>
-    /* Ensure white background if this runs in an iframe */
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: white;
-      font-family: sans-serif;
-    }
-
     body {
+      font-family: sans-serif;
+      background: #f7f7f7;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -24,9 +16,7 @@
       padding: 30px 40px;
       border-radius: 6px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      max-width: 950px;
-      width: 100%;
-      box-sizing: border-box;
+      width: 950px;
     }
 
     h3 {
@@ -48,19 +38,15 @@
     th.label-col, td.label-col {
       text-align: left;
       font-weight: bold;
-      width: 45%;
+      width: 45%; /* was 30% — added 75px-worth of space */
     }
 
     th.option-col {
-      width: 11%;
+      width: 11%;  /* was 14% — reduced by 15px-worth of space */
       line-height: 1.2em;
     }
 
     td.option-col {
-      vertical-align: top;
-    }
-
-    td input[type="radio"] {
       vertical-align: top;
     }
 
@@ -105,38 +91,16 @@
       height: 18px;
     }
 
-    /* Mobile responsiveness */
-    @media (max-width: 800px) {
-      th.label-col,
-      td.label-col {
-        font-size: 0.95em;
-        width: 40%;
-      }
-
-      th.option-col {
-        font-size: 0.85em;
-        width: 12%;
-      }
-
-      input[type="radio"] {
-        width: 16px;
-        height: 16px;
-      }
-
-      textarea {
-        font-size: 0.95em;
-      }
-
-      button {
-        font-size: 0.95em;
-        padding: 8px 16px;
-      }
+    td input[type="radio"] {
+      vertical-align: top;
     }
+    
   </style>
 </head>
 <body>
   <div class="card">
     <h3>Quick Survey</h3>
+
     <table>
       <thead>
         <tr>
@@ -151,19 +115,19 @@
       <tbody>
         <tr>
           <td class="label-col">I enjoyed this Jupyter notebook a lot.</td>
-          <td><input type="radio" name="enjoy" value="1"></td>
-          <td><input type="radio" name="enjoy" value="2"></td>
-          <td><input type="radio" name="enjoy" value="3"></td>
-          <td><input type="radio" name="enjoy" value="4"></td>
-          <td><input type="radio" name="enjoy" value="5"></td>
+          <td class="option-col"><input type="radio" name="enjoy" value="1"></td>
+          <td class="option-col"><input type="radio" name="enjoy" value="2"></td>
+          <td class="option-col"><input type="radio" name="enjoy" value="3"></td>
+          <td class="option-col"><input type="radio" name="enjoy" value="4"></td>
+          <td class="option-col"><input type="radio" name="enjoy" value="5"></td>
         </tr>
         <tr>
           <td class="label-col">I learned a lot from this Jupyter notebook.</td>
-          <td><input type="radio" name="learn" value="1"></td>
-          <td><input type="radio" name="learn" value="2"></td>
-          <td><input type="radio" name="learn" value="3"></td>
-          <td><input type="radio" name="learn" value="4"></td>
-          <td><input type="radio" name="learn" value="5"></td>
+          <td class="option-col"><input type="radio" name="learn" value="1"></td>
+          <td class="option-col"><input type="radio" name="learn" value="2"></td>
+          <td class="option-col"><input type="radio" name="learn" value="3"></td>
+          <td class="option-col"><input type="radio" name="learn" value="4"></td>
+          <td class="option-col"><input type="radio" name="learn" value="5"></td>
         </tr>
         <tr>
           <td colspan="6">
