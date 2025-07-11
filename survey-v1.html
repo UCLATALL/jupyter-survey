@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Quick Survey</title>
   <style>
-    body {
+    /* Ensure white background if this runs in an iframe */
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: white;
       font-family: sans-serif;
-      background: #f7f7f7;
+    }
+
+    body {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
-      min-height: 100vh;
-      box-sizing: border-box;
+      height: 100vh;
     }
 
     .card {
@@ -28,16 +33,10 @@
       margin-top: 0;
     }
 
-    .table-wrapper {
-      overflow-x: auto;
-      width: 100%;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
-      min-width: 600px;
     }
 
     th, td {
@@ -61,13 +60,16 @@
       vertical-align: top;
     }
 
+    td input[type="radio"] {
+      vertical-align: top;
+    }
+
     textarea {
       width: 100%;
       height: 80px;
       font-size: 1em;
       padding: 10px;
       margin-top: 10px;
-      box-sizing: border-box;
     }
 
     .button-wrapper {
@@ -103,89 +105,74 @@
       height: 18px;
     }
 
-    td input[type="radio"] {
-      vertical-align: top;
-    }
+    /* Mobile responsiveness */
+    @media (max-width: 800px) {
+      th.label-col,
+      td.label-col {
+        font-size: 0.95em;
+        width: 40%;
+      }
 
-    @media (max-width: 600px) {
-      th.label-col, td.label-col {
-        width: auto;
+      th.option-col {
+        font-size: 0.85em;
+        width: 12%;
+      }
+
+      input[type="radio"] {
+        width: 16px;
+        height: 16px;
+      }
+
+      textarea {
+        font-size: 0.95em;
+      }
+
+      button {
+        font-size: 0.95em;
+        padding: 8px 16px;
       }
     }
-
-    @media (max-width: 800px) {
-  .card {
-    padding: 20px;
-  }
-
-  th.label-col, td.label-col {
-    font-size: 0.95em;
-    width: 40%; /* slightly narrower */
-  }
-
-  th.option-col {
-    font-size: 0.85em;
-    width: 12%; /* slightly narrower */
-  }
-
-  input[type="radio"] {
-    width: 16px;
-    height: 16px;
-  }
-
-  textarea {
-    font-size: 0.95em;
-  }
-
-  button {
-    font-size: 0.95em;
-    padding: 8px 16px;
-  }
-}
   </style>
 </head>
 <body>
   <div class="card">
     <h3>Quick Survey</h3>
-
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th class="label-col"></th>
-            <th class="option-col">Strongly<br>Disagree</th>
-            <th class="option-col">Disagree</th>
-            <th class="option-col">Neutral</th>
-            <th class="option-col">Agree</th>
-            <th class="option-col">Strongly<br>Agree</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="label-col">I enjoyed this Jupyter notebook a lot.</td>
-            <td><input type="radio" name="enjoy" value="1"></td>
-            <td><input type="radio" name="enjoy" value="2"></td>
-            <td><input type="radio" name="enjoy" value="3"></td>
-            <td><input type="radio" name="enjoy" value="4"></td>
-            <td><input type="radio" name="enjoy" value="5"></td>
-          </tr>
-          <tr>
-            <td class="label-col">I learned a lot from this Jupyter notebook.</td>
-            <td><input type="radio" name="learn" value="1"></td>
-            <td><input type="radio" name="learn" value="2"></td>
-            <td><input type="radio" name="learn" value="3"></td>
-            <td><input type="radio" name="learn" value="4"></td>
-            <td><input type="radio" name="learn" value="5"></td>
-          </tr>
-          <tr>
-            <td colspan="6">
-              <p style="text-align:left; font-weight:bold;">What suggestions do you have for improving the notebook?</p>
-              <textarea id="suggestions" placeholder="Your feedback..."></textarea>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="label-col"></th>
+          <th class="option-col">Strongly<br>Disagree</th>
+          <th class="option-col">Disagree</th>
+          <th class="option-col">Neutral</th>
+          <th class="option-col">Agree</th>
+          <th class="option-col">Strongly<br>Agree</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label-col">I enjoyed this Jupyter notebook a lot.</td>
+          <td><input type="radio" name="enjoy" value="1"></td>
+          <td><input type="radio" name="enjoy" value="2"></td>
+          <td><input type="radio" name="enjoy" value="3"></td>
+          <td><input type="radio" name="enjoy" value="4"></td>
+          <td><input type="radio" name="enjoy" value="5"></td>
+        </tr>
+        <tr>
+          <td class="label-col">I learned a lot from this Jupyter notebook.</td>
+          <td><input type="radio" name="learn" value="1"></td>
+          <td><input type="radio" name="learn" value="2"></td>
+          <td><input type="radio" name="learn" value="3"></td>
+          <td><input type="radio" name="learn" value="4"></td>
+          <td><input type="radio" name="learn" value="5"></td>
+        </tr>
+        <tr>
+          <td colspan="6">
+            <p style="text-align:left; font-weight:bold;">What suggestions do you have for improving the notebook?</p>
+            <textarea id="suggestions" placeholder="Your feedback..."></textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <div class="button-wrapper">
       <button id="submitBtn" onclick="submitSurvey()">Submit</button>
