@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quick Survey: Pets & Happiness</title>
+  <style>
+    :root {
+      --brand: #007acc;
+      --bg: #f7f7f7;
+      --card: #ffffff;
+      --muted: #666;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .card {
+      background: var(--card);
+      width: 980px;
+      max-width: 100%;
+      padding: 28px 32px;
+      border-radius: 10px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    }
+    h2, h3 { margin: 0 0 8px 0; }
+    p.help { color: var(--muted); margin-top: 0; }
+    .q {
+      margin: 18px 0 22px 0;
+      padding: 14px 0;
+      border-top: 1px solid #eee;
+    }
+    .q:first-of-type { border-top: 0; }
+    .label {
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .pet-options {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 10px;
+    }
+    .pet-options label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .pet-options input { accent-color: var(--brand); }
+    .scale {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .scale label {
+      display: grid;
+      place-items: center;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px 0;
+      cursor: pointer;
+      user-select: none;
+      font-variant-numeric: tabular-nums;
+    }
+    .scale input { display: none; }
+    .scale input:checked + span {
+      background: rgba(0, 122, 204, 0.12);
+      border-color: var(--brand);
+      color: #000;
+      font-weight: 700;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .row .hint { color: var(--muted); font-size: 0.9em; }
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    button {
+      background: var(--brand);
+      color: #fff;
+      padding: 10px 18px;
+      border: 0;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:disabled { background: #9aa7b1; cursor: not-allowed; }
+    #confirmation {
+      display: none;
+      font-weight: 700;
+      color: green;
+      text-align: center;
+      margin-top: 14px;
+    }
+    .error { color: #b00020; font-size: 0.95em; margin-top: 8px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Quick Survey</h2>
+    <p class="help">Please answer both questions. Your instructor may provide a link that includes your class information automatically.</p>
+
+    <div class="q" id="q1">
+      <div class="label">1) What kind of pet do you have?</div>
+      <div class="pet-options" role="radiogroup" aria-label="Pet type">
+        <label><input type="radio" name="pet_type" value="Cat"><span>Cat</span></label>
+        <label><input type="radio" name="pet_type" value="Dog"><span>Dog</span></label>
+        <label><input type="radio" name="pet_type" value="No Pets"><span>No Pets</span></label>
+        <label><input type="radio" name="pet_type" value="Other"><span>Other</span></label>
+      </div>
+      <div class="error" id="err_pet">Please choose one option.</div>
+    </div>
+
+    <div class="q" id="q2">
+      <div class="row">
+        <div class="label">2) On a scale of 1 to 10, how happy are you these days?</div>
+        <div class="hint">1 = extremely unhappy &nbsp;&middot;&nbsp; 10 = extremely happy</div>
+      </div>
+      <div class="scale">
+        <!-- radios 1..10 -->
+        <!-- We keep inputs before spans so :checked + span works -->
+        <label><input type="radio" name="happiness" value="1"><span>1</span></label>
+        <label><input type="radio" name="happiness" value="2"><span>2</span></label>
+        <label><input type="radio" name="happiness" value="3"><span>3</span></label>
+        <label><input type="radio" name="happiness" value="4"><span>4</span></label>
+        <label><input type="radio" name="happiness" value="5"><span>5</span></label>
+        <label><input type="radio" name="happiness" value="6"><span>6</span></label>
+        <label><input type="radio" name="happiness" value="7"><span>7</span></label>
+        <label><input type="radio" name="happiness" value="8"><span>8</span></label>
+        <label><input type="radio" name="happiness" value="9"><span>9</span></label>
+        <label><input type="radio" name="happiness" value="10"><span>10</span></label>
+      </div>
+      <div class="error" id="err_happy">Please choose a number from 1 to 10.</div>
+    </div>
+
+    <div class="actions">
+      <button id="submitBtn" type="button">Submit</button>
+    </div>
+    <div id="confirmation">Thanks for your response!</div>
+  </div>
+
+  <script>
+    // ======= CONFIG =======
+    // Replace with your Google Apps Script web app URL after you deploy it:
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyRGIOp1xwG5kTCZmayHCq2kQQ4nIiN9Qqk9auZWaQyuKlULc52-v2wk3SZzu10K8mO/exec";
+
+    // ======= PARAMS (class_id, user_id, notebook_id) =======
+    const params = new URLSearchParams(window.location.search);
+    const class_id   = params.get("class_id")   || "unknown_class";
+    const user_id    = params.get("user_id")    || "unknown_user";
+    const notebook_id= params.get("notebook_id")|| "unknown_notebook";
+
+    // ======= VALIDATION =======
+    function validate() {
+      let ok = true;
+      const pet = document.querySelector('input[name="pet_type"]:checked');
+      const happy = document.querySelector('input[name="happiness"]:checked');
+
+      document.getElementById("err_pet").style.display = pet ? "none" : "block";
+      document.getElementById("err_happy").style.display = happy ? "none" : "block";
+
+      if (!pet || !happy) ok = false;
+      return ok;
+    }
+
+    // ======= SUBMIT =======
+    document.getElementById("submitBtn").addEventListener("click", async () => {
+      if (!validate()) return;
+
+      const pet = document.querySelector('input[name="pet_type"]:checked').value;
+      const happy = document.querySelector('input[name="happiness"]:checked').value;
+
+      const payload = new URLSearchParams();
+      payload.append("date", new Date().toISOString());
+      payload.append("class_id", class_id);
+      payload.append("user_id", user_id);
+      payload.append("notebook_id", notebook_id);
+      payload.append("pet_type", pet);
+      payload.append("happiness", happy);
+
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = true;
+      btn.textContent = "Submitting...";
+
+      try {
+        const res = await fetch(scriptURL, { method: "POST", body: payload });
+        if (!res.ok) throw new Error("Network response was not ok");
+        document.getElementById("confirmation").style.display = "block";
+        document.querySelectorAll("input").forEach(el => el.disabled = true);
+        btn.style.display = "none";
+      } catch (err) {
+        alert("Submission failed. Please try again.");
+        console.error(err);
+        btn.disabled = false;
+        btn.textContent = "Submit";
+      }
+    });
+  </script>
+</body>
+</html>
