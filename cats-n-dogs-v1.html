@@ -158,62 +158,60 @@
     <div id="confirmation">Thanks for your response!</div>
   </div>
 
-  <script>
-    // ======= CONFIG =======
-    // Replace with your Google Apps Script web app URL after you deploy it:
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyRGIOp1xwG5kTCZmayHCq2kQQ4nIiN9Qqk9auZWaQyuKlULc52-v2wk3SZzu10K8mO/exec";
+<script>
+  // ======= CONFIG =======
+  // Replace with your Google Apps Script web app URL after you deploy it:
+  const scriptURL = "YOUR_SCRIPT_WEB_APP_URL";
 
-    // ======= PARAMS (class_id, user_id, notebook_id) =======
-    const params = new URLSearchParams(window.location.search);
-    const class_id   = params.get("class_id")   || "unknown_class";
-    const user_id    = params.get("user_id")    || "unknown_user";
-    const notebook_id= params.get("notebook_id")|| "unknown_notebook";
+  // ======= PARAMS (class_id, user_id) =======
+  const params = new URLSearchParams(window.location.search);
+  const class_id   = params.get("class_id")   || "unknown_class";
+  const user_id    = params.get("user_id")    || "unknown_user";
 
-    // ======= VALIDATION =======
-    function validate() {
-      let ok = true;
-      const pet = document.querySelector('input[name="pet_type"]:checked');
-      const happy = document.querySelector('input[name="happiness"]:checked');
+  // ======= VALIDATION =======
+  function validate() {
+    let ok = true;
+    const pet = document.querySelector('input[name="pet_type"]:checked');
+    const happy = document.querySelector('input[name="happiness"]:checked');
 
-      document.getElementById("err_pet").style.display = pet ? "none" : "block";
-      document.getElementById("err_happy").style.display = happy ? "none" : "block";
+    document.getElementById("err_pet").style.display = pet ? "none" : "block";
+    document.getElementById("err_happy").style.display = happy ? "none" : "block";
 
-      if (!pet || !happy) ok = false;
-      return ok;
+    if (!pet || !happy) ok = false;
+    return ok;
+  }
+
+  // ======= SUBMIT =======
+  document.getElementById("submitBtn").addEventListener("click", async () => {
+    if (!validate()) return;
+
+    const pet = document.querySelector('input[name="pet_type"]:checked').value;
+    const happy = document.querySelector('input[name="happiness"]:checked').value;
+
+    const payload = new URLSearchParams();
+    payload.append("date", new Date().toISOString());
+    payload.append("class_id", class_id);
+    payload.append("user_id", user_id);
+    payload.append("pet_type", pet);
+    payload.append("happiness", happy);
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    try {
+      const res = await fetch(scriptURL, { method: "POST", body: payload });
+      if (!res.ok) throw new Error("Network response was not ok");
+      document.getElementById("confirmation").style.display = "block";
+      document.querySelectorAll("input").forEach(el => el.disabled = true);
+      btn.style.display = "none";
+    } catch (err) {
+      alert("Submission failed. Please try again.");
+      console.error(err);
+      btn.disabled = false;
+      btn.textContent = "Submit";
     }
-
-    // ======= SUBMIT =======
-    document.getElementById("submitBtn").addEventListener("click", async () => {
-      if (!validate()) return;
-
-      const pet = document.querySelector('input[name="pet_type"]:checked').value;
-      const happy = document.querySelector('input[name="happiness"]:checked').value;
-
-      const payload = new URLSearchParams();
-      payload.append("date", new Date().toISOString());
-      payload.append("class_id", class_id);
-      payload.append("user_id", user_id);
-      payload.append("notebook_id", notebook_id);
-      payload.append("pet_type", pet);
-      payload.append("happiness", happy);
-
-      const btn = document.getElementById("submitBtn");
-      btn.disabled = true;
-      btn.textContent = "Submitting...";
-
-      try {
-        const res = await fetch(scriptURL, { method: "POST", body: payload });
-        if (!res.ok) throw new Error("Network response was not ok");
-        document.getElementById("confirmation").style.display = "block";
-        document.querySelectorAll("input").forEach(el => el.disabled = true);
-        btn.style.display = "none";
-      } catch (err) {
-        alert("Submission failed. Please try again.");
-        console.error(err);
-        btn.disabled = false;
-        btn.textContent = "Submit";
-      }
-    });
-  </script>
+  });
+</script>
 </body>
 </html>
