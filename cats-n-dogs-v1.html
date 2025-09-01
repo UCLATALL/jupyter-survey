@@ -133,11 +133,9 @@
     <div class="q" id="q2">
       <div class="row">
         <div class="label">2) On a scale of 1 to 10, how happy are you these days?</div>
-        <div class="hint">1 = extremely unhappy &nbsp;&middot;&nbsp; 10 = extremely happy</div>
+        <div class="hint">1 = extremely unhappy · 10 = extremely happy</div>
       </div>
       <div class="scale">
-        <!-- radios 1..10 -->
-        <!-- We keep inputs before spans so :checked + span works -->
         <label><input type="radio" name="happiness" value="1"><span>1</span></label>
         <label><input type="radio" name="happiness" value="2"><span>2</span></label>
         <label><input type="radio" name="happiness" value="3"><span>3</span></label>
@@ -158,60 +156,64 @@
     <div id="confirmation">Thanks for your response!</div>
   </div>
 
-<script>
-  // ======= CONFIG =======
-  // Replace with your Google Apps Script web app URL after you deploy it:
-  const scriptURL = "https://script.google.com/macros/s/AKfycbyfyt93UCWcZLoC9IAQGUQ7NOciMMBT-PQrGStBLkBuGMiR4E25wOQptUze0JXgAT-6/exec";
+  <script>
+    // ======= CONFIG =======
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyfyt93UCWcZLoC9IAQGUQ7NOciMMBT-PQrGStBLkBuGMiR4E25wOQptUze0JXgAT-6/exec"; // replace with your deployed /exec URL
 
-  // ======= PARAMS (class_id, user_id) =======
-  const params = new URLSearchParams(window.location.search);
-  const class_id   = params.get("class_id")   || "unknown_class";
-  const user_id    = params.get("user_id")    || "unknown_user";
+    // ======= PARAMS (class_id, user_id) =======
+    const params = new URLSearchParams(window.location.search);
+    const class_id   = params.get("class_id")   || "unknown_class";
+    const user_id    = params.get("user_id")    || "unknown_user";
 
-  // ======= VALIDATION =======
-  function validate() {
-    let ok = true;
-    const pet = document.querySelector('input[name="pet_type"]:checked');
-    const happy = document.querySelector('input[name="happiness"]:checked');
+    // ======= VALIDATION =======
+    function validate() {
+      let ok = true;
+      const pet = document.querySelector('input[name="pet_type"]:checked');
+      const happy = document.querySelector('input[name="happiness"]:checked');
 
-    document.getElementById("err_pet").style.display = pet ? "none" : "block";
-    document.getElementById("err_happy").style.display = happy ? "none" : "block";
+      document.getElementById("err_pet").style.display = pet ? "none" : "block";
+      document.getElementById("err_happy").style.display = happy ? "none" : "block";
 
-    if (!pet || !happy) ok = false;
-    return ok;
-  }
-
-  // ======= SUBMIT =======
-  document.getElementById("submitBtn").addEventListener("click", async () => {
-    if (!validate()) return;
-
-    const pet = document.querySelector('input[name="pet_type"]:checked').value;
-    const happy = document.querySelector('input[name="happiness"]:checked').value;
-
-    const payload = new URLSearchParams();
-    payload.append("date", new Date().toISOString());
-    payload.append("class_id", class_id);
-    payload.append("user_id", user_id);
-    payload.append("pet_type", pet);
-    payload.append("happiness", happy);
-
-    const btn = document.getElementById("submitBtn");
-    btn.disabled = true;
-    btn.textContent = "Submitting...";
-
-    try {
-      const res = await fetch(scriptURL, { method: "POST", body: payload });
-      if (!res.ok) throw new Error("Network response was not ok");
-      document.getElementById("confirmation").style.display = "block";
-      document.querySelectorAll("input").forEach(el => el.disabled = true);
-      btn.style.display = "none";
-    } catch (err) {
-      alert("Submission failed. Please try again.");
-      console.error(err);
-      btn.disabled = false;
-      btn.textContent = "Submit";
+      if (!pet || !happy) ok = false;
+      return ok;
     }
-  });
-</script>
+
+    // ======= SUBMIT (with no-cors) =======
+    document.getElementById("submitBtn").addEventListener("click", async () => {
+      if (!validate()) return;
+
+      const pet = document.querySelector('input[name="pet_type"]:checked').value;
+      const happy = document.querySelector('input[name="happiness"]:checked').value;
+
+      const payload = new URLSearchParams();
+      payload.append("date", new Date().toISOString());
+      payload.append("class_id", class_id);
+      payload.append("user_id", user_id);
+      payload.append("pet_type", pet);
+      payload.append("happiness", happy);
+
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = true;
+      btn.textContent = "Submitting...";
+
+      try {
+        await fetch(scriptURL, {
+          method: "POST",
+          mode: "no-cors",  // <-- bypass CORS
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: payload
+        });
+        // Treat as success (can't inspect response in no-cors mode)
+        document.getElementById("confirmation").style.display = "block";
+        document.querySelectorAll("input").forEach(el => el.disabled = true);
+        btn.style.display = "none";
+      } catch (err) {
+        alert("Submission failed. Please try again.");
+        console.error(err);
+        btn.disabled = false;
+        btn.textContent = "Submit";
+      }
+    });
+  </script>
 </body>
 </html>
