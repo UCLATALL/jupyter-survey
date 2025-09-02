@@ -53,7 +53,7 @@ IRdisplay::display_html(sprintf(
 
 ```r
 sheet_url <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vT47ZPJ-19035LkwvRIubWry-liqNapq7Eyj_XhkWtqD8c01fHP62HZ6WNOCKipZNVfk-pZt7lf2w4W/pub?gid=0&single=true&output=csv"
-data <- utils::read.csv(sheet_url, header = TRUE, stringsAsFactors = FALSE) %>%
+data <- suppressWarnings(utils::read.csv(sheet_url, header = TRUE, stringsAsFactors = FALSE)) %>%
   mutate(date = as.POSIXct(date, format = "%Y-%m-%dT%H:%M:%OSZ", tz = "UTC")) %>%
   filter(class_id == !!class_id) %>%
   select(date, user_id, class_id, enjoy_rating, learn_rating, suggestions)
@@ -74,7 +74,7 @@ Variables that should be defined inside the notebook:
 
 **Additional variables in the Google sheet:**
 
-- `pet_type`
+- `pet_type` (`Cat`, `Dog`, `Both`, `Neither`
 - `happiness`
 - `date`
 
@@ -93,7 +93,7 @@ IRdisplay::display_html(sprintf(
 
 ```r
 sheet_url <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vTm5IafEMmLJBMdaGLiDzAsFu0lEQYXQeKJDNlPVSm33FwdoWdUjYgki1RlDQ-gVfVVH78MfEeNzozm/pub?gid=0&single=true&output=csv"
-data <- utils::read.csv(sheet_url, header = TRUE, stringsAsFactors = FALSE) %>%
+data <- suppressWarnings(utils::read.csv(sheet_url, header = TRUE, stringsAsFactors = FALSE)) %>%
   mutate(date = as.POSIXct(date, format = "%Y-%m-%dT%H:%M:%OSZ", tz = "UTC")) %>%
   filter(class_id == !!class_id) %>%
   select(date, user_id, class_id, pet_type, happiness)
