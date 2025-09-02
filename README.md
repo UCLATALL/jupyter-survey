@@ -74,7 +74,7 @@ Variables that should be defined inside the notebook:
 
 **Additional variables in the Google sheet:**
 
-- `pet_type` (`Cat`, `Dog`, `Both`, `Neither`
+- `pet_type` (`Cat`, `Dog`, `Both`, `Neither`)
 - `happiness`
 - `date`
 
