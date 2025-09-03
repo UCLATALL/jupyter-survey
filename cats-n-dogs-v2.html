@@ -23,7 +23,7 @@
     <h3>Quick Survey</h3>
 
     <div class="q">
-      <div><strong>1) What kind of pet do you have?</strong></div>
+      <div><strong>1) What kind of pet do you have?</strong></div><br>
       <div class="options">
         <label><input type="radio" name="pet_type" value="Cat"> Cat</label>
         <label><input type="radio" name="pet_type" value="Dog"> Dog</label>
@@ -45,21 +45,13 @@
           name="happiness"
           min="1"
           max="10"
-          step="0.1"
-          value="5.5"
+          step="1"
+          value="5"
           style="flex:1;"
-          aria-label="Happiness (1 to 10)"
-          list="happiness_ticks"
         />
         <span>10</span>
-        <output id="happy_val" for="happiness" style="min-width:3ch;text-align:right;">5.5</output>
+        <output id="happy_val" for="happiness" style="min-width:3ch;text-align:right;">5</output>
       </div>
-      <datalist id="happiness_ticks">
-        <option value="1"></option><option value="2"></option><option value="3"></option>
-        <option value="4"></option><option value="5"></option><option value="6"></option>
-        <option value="7"></option><option value="8"></option><option value="9"></option>
-        <option value="10"></option>
-      </datalist>
       <div id="err_happy" class="error">Please choose a value from 1 to 10.</div>
     </div>
 
@@ -69,49 +61,50 @@
     <div id="confirmation">Thanks for your response!</div>
   </div>
 
-  <!-- Put scripts at the very end so DOM elements already exist -->
   <script>
     // ----- CONFIG -----
     const scriptURL = "https://script.google.com/macros/s/AKfycbzzaSQOgY6c7JJGxKNhNgq4EkGnQ4e8j9wE7UxzQbtrvylJxwaKX6vFsouHZWpRMYFm2Q/exec";
-
-    // URL params (teacher can pass class_id & user_id)
     const params   = new URLSearchParams(window.location.search);
     const class_id = params.get("class_id") || "unknown_class";
     const user_id  = params.get("user_id")  || "unknown_user";
 
-    // Slider live value readout
+    // Slider live readout
     const hSlider = document.getElementById("happiness");
     const hOut    = document.getElementById("happy_val");
-    if (hSlider && hOut) {
-      hSlider.addEventListener("input", () => { hOut.value = hSlider.value; });
-    }
+    hSlider.addEventListener("input", () => { hOut.value = hSlider.value; });
 
-    // Simple validation
+    // Validation
     function validate() {
       const pet   = document.querySelector('input[name="pet_type"]:checked');
-      const happy = document.getElementById("happiness")?.value;
+      const happy = document.getElementById("happiness").value;
       document.getElementById("err_pet").style.display   = pet ? "none" : "block";
-      document.getElementById("err_happy").style.display =
-        happy && Number(happy) >= 1 && Number(happy) <= 10 ? "none" : "block";
+      document.getElementById("err_happy").style.display = happy ? "none" : "block";
       return !!(pet && happy);
     }
 
-    // Standardized submit (only shows success if server replies "OK")
-    function submitSurvey(payload) {
+    // Simple submit handler (always shows "Thanks" once fetch completes)
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      if (!validate()) return;
+
+      const pet   = document.querySelector('input[name="pet_type"]:checked').value;
+      const happy = document.getElementById("happiness").value;
+
+      const payload = new URLSearchParams();
+      payload.append("date", new Date().toISOString());
+      payload.append("class_id", class_id);
+      payload.append("user_id", user_id);
+      payload.append("pet_type", pet);
+      payload.append("happiness", happy);
+
       const btn = document.getElementById("submitBtn");
       btn.disabled = true;
       btn.innerText = "Submitting...";
 
       fetch(scriptURL, { method: "POST", body: payload })
-        .then(r => r.text())
-        .then(text => {
-          if (text.trim() === "OK") {
-            document.getElementById("confirmation").style.display = "block";
-            document.querySelectorAll("input").forEach(el => el.disabled = true);
-            btn.style.display = "none";
-          } else {
-            throw new Error(text);
-          }
+        .then(() => {
+          document.getElementById("confirmation").style.display = "block";
+          btn.style.display = "none";
+          document.querySelectorAll("input").forEach(el => el.disabled = true);
         })
         .catch(err => {
           alert("Submission failed.");
@@ -119,24 +112,6 @@
           btn.disabled = false;
           btn.innerText = "Submit";
         });
-    }
-
-    // Hook up the button
-    document.getElementById("submitBtn").addEventListener("click", () => {
-      if (!validate()) return;
-
-      const pet   = document.querySelector('input[name="pet_type"]:checked').value;
-      const happy = document.getElementById("happiness").value;
-
-      const payload = new URLSearchParams({
-        date: new Date().toISOString(),
-        class_id,
-        user_id,
-        pet_type:  pet,
-        happiness: happy
-      });
-
-      submitSurvey(payload);
     });
   </script>
 </body>
