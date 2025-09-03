@@ -68,33 +68,43 @@
     const class_id = params.get("class_id") || "unknown_class";
     const user_id  = params.get("user_id")  || "unknown_user";
 
-    // Slider live readout
+    // ----- SLIDER LIVE READOUT -----
     const hSlider = document.getElementById("happiness");
     const hOut    = document.getElementById("happy_val");
-    hSlider.addEventListener("input", () => { hOut.value = hSlider.value; });
+    const fmt     = v => Number(v).toFixed(1);
 
-    // Validation
+    // initialize the output with the starting slider value
+    hOut.value = fmt(hSlider.value);
+
+    // update the output while moving the slider
+    hSlider.addEventListener("input", () => {
+      hOut.value = fmt(hSlider.value);
+    });
+
+    // ----- VALIDATION -----
     function validate() {
       const pet   = document.querySelector('input[name="pet_type"]:checked');
-      const happy = document.getElementById("happiness").value;
+      const happy = hSlider.value;
       document.getElementById("err_pet").style.display   = pet ? "none" : "block";
-      document.getElementById("err_happy").style.display = happy ? "none" : "block";
+      document.getElementById("err_happy").style.display =
+        happy && Number(happy) >= 1 && Number(happy) <= 10 ? "none" : "block";
       return !!(pet && happy);
     }
 
-    // Simple submit handler (always shows "Thanks" once fetch completes)
+    // ----- SUBMIT HANDLER -----
     document.getElementById("submitBtn").addEventListener("click", () => {
       if (!validate()) return;
 
       const pet   = document.querySelector('input[name="pet_type"]:checked').value;
-      const happy = document.getElementById("happiness").value;
+      const happy = fmt(hSlider.value); // send one decimal place
 
-      const payload = new URLSearchParams();
-      payload.append("date", new Date().toISOString());
-      payload.append("class_id", class_id);
-      payload.append("user_id", user_id);
-      payload.append("pet_type", pet);
-      payload.append("happiness", happy);
+      const payload = new URLSearchParams({
+        date: new Date().toISOString(),
+        class_id,
+        user_id,
+        pet_type: pet,
+        happiness: happy
+      });
 
       const btn = document.getElementById("submitBtn");
       btn.disabled = true;
@@ -114,5 +124,7 @@
         });
     });
   </script>
+</body>
+</html>
 </body>
 </html>
