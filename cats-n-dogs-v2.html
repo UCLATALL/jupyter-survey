@@ -5,17 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Quick Survey: Pets & Happiness</title>
   <style>
-    body { font-family: sans-serif; background:#f7f7f7; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; }
-    .card { background:#fff; padding:30px 40px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,.1); width:950px; max-width:100%; }
-    h3 { margin-top:0; }
-    .q { margin:18px 0 22px 0; }
-    .options { display:grid; grid-template-columns:repeat(4, minmax(120px,1fr)); gap:10px; }
-    .options label { display:flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid #ddd; border-radius:8px; cursor:pointer; }
-    .actions { text-align:center; margin-top:18px; }
-    button { background:#007acc; color:#fff; padding:10px 20px; border:0; border-radius:4px; font-size:1em; cursor:pointer; }
-    button:disabled { background:#999; cursor:not-allowed; }
-    #confirmation { display:none; font-weight:bold; color:green; text-align:center; margin-top:20px; }
-    .error { color:#b00020; display:none; margin-top:6px; }
+    body {
+      font-family: sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      width: 950px;
+      max-width: 100%;
+    }
+    h3 { margin-top: 0; }
+    .q { margin: 18px 0 22px 0; }
+    .options {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px,1fr));
+      gap: 10px;
+    }
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .actions { text-align: center; margin-top: 18px; }
+    button {
+      background: #007acc;
+      color: #fff;
+      padding: 10px 20px;
+      border: 0;
+      border-radius: 4px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    button:disabled { background: #999; cursor: not-allowed; }
+    #confirmation {
+      display: none;
+      font-weight: bold;
+      color: green;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .error { color: #b00020; display: none; margin-top: 6px; }
+
+    /* slider bubble */
+    .range-wrap { position: relative; }
+    .range { width: 100%; }
+    .bubble {
+      position: absolute;
+      top: -36px;
+      transform: translateX(-50%);
+      background: #007acc;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 12px;
+      line-height: 20px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .bubble::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #007acc;
+    }
   </style>
 </head>
 <body>
@@ -23,7 +90,7 @@
     <h3>Quick Survey</h3>
 
     <div class="q">
-      <div><strong>1) What kind of pet do you have?</strong></div><br>
+      <div><strong>1) What kind of pet do you have?</strong></div>
       <div class="options">
         <label><input type="radio" name="pet_type" value="Cat"> Cat</label>
         <label><input type="radio" name="pet_type" value="Dog"> Dog</label>
@@ -37,21 +104,27 @@
       <div><strong>2) On a scale of 1 to 10, how happy are you these days?</strong><br>
         <small>1 = extremely unhappy; 10 = extremely happy</small>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:10px;">
-        <span>1</span>
+      <div class="range-wrap" style="margin-top:10px;">
         <input
           id="happiness"
+          class="range"
           type="range"
           name="happiness"
           min="1"
           max="10"
           step="0.1"
-          value="5.5"
-          style="flex:1;"
+          value="5.0"
+          aria-label="Happiness (1 to 10)"
+          list="happiness_ticks"
         />
-        <span>10</span>
-        <output id="happy_val" for="happiness" style="min-width:3ch;text-align:right;">5.5</output>
+        <output id="happy_bubble" class="bubble">5.0</output>
       </div>
+      <datalist id="happiness_ticks">
+        <option value="1"></option><option value="2"></option><option value="3"></option>
+        <option value="4"></option><option value="5"></option><option value="6"></option>
+        <option value="7"></option><option value="8"></option><option value="9"></option>
+        <option value="10"></option>
+      </datalist>
       <div id="err_happy" class="error">Please choose a value from 1 to 10.</div>
     </div>
 
@@ -68,18 +141,21 @@
     const class_id = params.get("class_id") || "unknown_class";
     const user_id  = params.get("user_id")  || "unknown_user";
 
-    // ----- SLIDER LIVE READOUT -----
+    // ----- SLIDER BUBBLE -----
     const hSlider = document.getElementById("happiness");
-    const hOut    = document.getElementById("happy_val");
-    const fmt     = v => Number(v).toFixed(1);
+    const bubble  = document.getElementById("happy_bubble");
+    const fmt1    = v => Number(v).toFixed(1);
 
-    // initialize the output with the starting slider value
-    hOut.value = fmt(hSlider.value);
-
-    // update the output while moving the slider
-    hSlider.addEventListener("input", () => {
-      hOut.value = fmt(hSlider.value);
-    });
+    function setBubble(slider, bubbleEl) {
+      const val = Number(slider.value);
+      const min = Number(slider.min) || 0;
+      const max = Number(slider.max) || 100;
+      const pct = ((val - min) * 100) / (max - min);
+      bubbleEl.textContent = fmt1(val);
+      bubbleEl.style.left = `calc(${pct}% + (${8 - pct * 0.15}px))`;
+    }
+    setBubble(hSlider, bubble);
+    hSlider.addEventListener("input", () => setBubble(hSlider, bubble));
 
     // ----- VALIDATION -----
     function validate() {
@@ -91,20 +167,19 @@
       return !!(pet && happy);
     }
 
-    // ----- SUBMIT HANDLER -----
+    // ----- SUBMIT HANDLER (simple version, always thanks on success) -----
     document.getElementById("submitBtn").addEventListener("click", () => {
       if (!validate()) return;
 
       const pet   = document.querySelector('input[name="pet_type"]:checked').value;
-      const happy = fmt(hSlider.value); // send one decimal place
+      const happy = fmt1(hSlider.value);
 
-      const payload = new URLSearchParams({
-        date: new Date().toISOString(),
-        class_id,
-        user_id,
-        pet_type: pet,
-        happiness: happy
-      });
+      const payload = new URLSearchParams();
+      payload.append("date", new Date().toISOString());
+      payload.append("class_id", class_id);
+      payload.append("user_id", user_id);
+      payload.append("pet_type", pet);
+      payload.append("happiness", happy);
 
       const btn = document.getElementById("submitBtn");
       btn.disabled = true;
@@ -124,7 +199,5 @@
         });
     });
   </script>
-</body>
-</html>
 </body>
 </html>
