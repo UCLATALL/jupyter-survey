@@ -82,9 +82,9 @@ Variables that should be defined inside the notebook:
 
 ```r
 IRdisplay::display_html(sprintf(
-  '<iframe src="https://uclatall.github.io/jupyter-survey/cats-n-dogs-v1.html?class_id=%s&user_id=%s" width="950" height="370" 
+  '<iframe src="https://uclatall.github.io/jupyter-survey/cats-n-dogs-v3.html?class_id=%s&user_id=%s" width="100%%" height="520" 
     sandbox="allow-scripts allow-same-origin" 
-    style="border: none; box-shadow: none; background: white;"></iframe>',
+    style="border: none; box-shadow: none; background: white; "></iframe>',
   class_id, user_id
 ))
 ```
