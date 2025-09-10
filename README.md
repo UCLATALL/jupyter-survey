@@ -1,3 +1,5 @@
+[Download all](https://download-directory.github.io/?url=https://github.com/UCLATALL/jupyter-survey/edit/main/)
+
 # Jupyter Surveys for Teaching
 
 This respository was developed as a means of embedding survey questions inside Jupyter notebooks. We use these surveys for teaching, as a means of facilitating data collection and analysis in live classroom environments. These tools are very definitely in *alpha*. We hope to develop them further in the future.
