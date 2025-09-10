@@ -1,4 +1,4 @@
-[Download all](https://download-directory.github.io/?url=https://github.com/UCLATALL/jupyter-survey/edit/main/)
+[Download all](https://download-directory.github.io/?url=https://github.com/coursekata/teaching-materials/tree/main/By%20Type%20(ABCD)/Overview%20Notebooks)
 
 # Jupyter Surveys for Teaching
 
