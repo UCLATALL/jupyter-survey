@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quick Survey: Pets & Happiness (Responsive v3)</title>
+  <style>
+    :root {
+      --brand: #007acc;
+      --bg: #f7f7f7;
+      --card: #ffffff;
+      --text: #111;
+      --muted: #666;
+      --error: #b00020;
+      --radius: 10px;
+      --shadow: 0 6px 24px rgba(0,0,0,0.08);
+    }
+
+    /* Base layout */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      width: 100%;
+      max-width: 940px;
+      padding: clamp(20px, 3vw, 32px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: clamp(20px, 2.5vw, 26px);
+    }
+
+    .help {
+      margin: 0 0 8px 0;
+      color: var(--muted);
+      font-size: clamp(14px, 2vw, 16px);
+    }
+
+    .q {
+      margin: 18px 0 22px 0;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+    .q:first-of-type { border-top: 0; }
+
+    .label {
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: clamp(16px, 2.2vw, 18px);
+    }
+
+    /* Responsive options grid */
+    .options {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+    }
+    @media (max-width: 820px) {
+      .options { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .options { grid-template-columns: 1fr; }
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+    .option input[type="radio"] {
+      /* bigger touch target */
+      width: 20px;
+      height: 20px;
+      accent-color: var(--brand);
+    }
+
+    /* Slider + bubble (no triangle, responsive) */
+    .range-wrap {
+      position: relative;
+      display: inline-block;   /* lets bubble position relative to slider width */
+      overflow: visible;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .range {
+      width: 100%;
+      touch-action: pan-y;     /* smoother on mobile */
+    }
+    .bubble {
+      position: absolute;
+      top: -24px; /* closer to the track */
+      transform: translateX(-50%);
+      background: #3273F6;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 16px;
+      line-height: 1;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 3;
+      display: inline-block;
+      min-width: 2.8ch;
+      text-align: center;
+    }
+
+    /* Actions and messages */
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+    }
+    button {
+      background: var(--brand);
+      color: #fff;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:disabled { background: #9aa7b1; cursor: not-allowed; }
+    #confirmation {
+      display: none;
+      font-weight: 700;
+      color: #117a3a;
+      text-align: center;
+      margin-top: 14px;
+      font-size: 16px;
+    }
+
+    .error {
+      color: var(--error);
+      display: none;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    /* Make buttons full-width on very small screens */
+    @media (max-width: 420px) {
+      .actions button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="form" aria-labelledby="title">
+    <h3 id="title">Cats and Dogs Survey</h3>
+    <p class="help">Please answer both questions.</p>
+
+    <!-- Q1: Pet type -->
+    <div class="q" id="q1">
+      <div class="label">1) What kind of pet do you have?</div><br>
+      <div class="options" role="radiogroup" aria-label="Pet type">
+        <label class="option"><input type="radio" name="pet_type" value="Cat"> <span>Cat</span></label>
+        <label class="option"><input type="radio" name="pet_type" value="Dog"> <span>Dog</span></label>
+        <label class="option"><input type="radio" name="pet_type" value="Both"> <span>Both</span></label>
+        <label class="option"><input type="radio" name="pet_type" value="Neither"> <span>Neither</span></label>
+      </div>
+      <div class="error" id="err_pet">Please choose one option.</div>
+    </div>
+
+    <!-- Q2: Happiness slider -->
+    <div class="q" id="q2">
+      <div class="label">2) On a scale of 1 to 10, how happy are you these days?</div>
+      <p class="help" style="margin: 0;">1 = extremely unhappy · 10 = extremely happy</p><br>
+
+      <div class="range-wrap" aria-label="Happiness slider">
+        <input
+          id="happiness"
+          class="range"
+          type="range"
+          name="happiness"
+          min="1"
+          max="10"
+          step="0.1"
+          value="5.5"
+          aria-valuemin="1"
+          aria-valuemax="10"
+          aria-valuenow="5.0"
+        />
+        <span id="happy_bubble" class="bubble" aria-hidden="true">5.0</span>
+      </div>
+
+      <div class="error" id="err_happy">Please choose a value from 1 to 10.</div>
+    </div>
+
+    <!-- Submit -->
+    <div class="actions">
+      <button id="submitBtn" type="button">Submit</button>
+    </div>
+    <div id="confirmation">Thanks for your response!</div>
+  </div>
+
+  <script>
+    // ----- CONFIG -----
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzzaSQOgY6c7JJGxKNhNgq4EkGnQ4e8j9wE7UxzQbtrvylJxwaKX6vFsouHZWpRMYFm2Q/exec";
+    const params   = new URLSearchParams(window.location.search);
+    const class_id = params.get("class_id") || "unknown_class";
+    const user_id  = params.get("user_id")  || "unknown_user";
+
+    // ----- SLIDER BUBBLE (no triangle) -----
+    const hSlider = document.getElementById("happiness");
+    const bubble  = document.getElementById("happy_bubble");
+    const fmt1    = v => Number(v).toFixed(1);
+
+    function setBubble(slider, bubbleEl) {
+      const val = Number(slider.value);
+      const min = Number(slider.min) || 0;
+      const max = Number(slider.max) || 100;
+      const pct = ((val - min) * 100) / (max - min); // 0..100
+      bubbleEl.textContent = fmt1(val);
+      // center bubble over thumb; tweak constants if needed across browsers
+      bubbleEl.style.left = `calc(${pct}% + (${8 - pct * 0.15}px))`;
+      slider.setAttribute("aria-valuenow", fmt1(val));
+    }
+
+    setBubble(hSlider, bubble);
+    hSlider.addEventListener("input", () => setBubble(hSlider, bubble));
+
+    // ----- VALIDATION -----
+    function validate() {
+      const pet   = document.querySelector('input[name="pet_type"]:checked');
+      const happy = hSlider.value;
+      document.getElementById("err_pet").style.display   = pet ? "none" : "block";
+      document.getElementById("err_happy").style.display =
+        happy && Number(happy) >= 1 && Number(happy) <= 10 ? "none" : "block";
+      return !!(pet && happy);
+    }
+
+    // ----- SUBMIT (simple: thank on fetch complete) -----
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      if (!validate()) return;
+
+      const pet   = document.querySelector('input[name="pet_type"]:checked').value;
+      const happy = fmt1(hSlider.value);
+
+      const payload = new URLSearchParams();
+      payload.append("date", new Date().toISOString());
+      payload.append("class_id", class_id);
+      payload.append("user_id", user_id);
+      payload.append("pet_type", pet);
+      payload.append("happiness", happy);
+
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = true;
+      btn.innerText = "Submitting...";
+
+      fetch(scriptURL, { method: "POST", body: payload })
+        .then(() => {
+          document.getElementById("confirmation").style.display = "block";
+          btn.style.display = "none";
+          document.querySelectorAll("input").forEach(el => el.disabled = true);
+        })
+        .catch(err => {
+          alert("Submission failed.");
+          console.error(err);
+          btn.disabled = false;
+          btn.innerText = "Submit";
+        });
+    });
+  </script>
+</body>
+</html>
